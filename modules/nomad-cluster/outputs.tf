@@ -19,23 +19,28 @@ output "launch_config_name" {
 }
 
 output "iam_instance_profile_arn" {
-  value = aws_iam_instance_profile.instance_profile.arn
+  value = element(concat(aws_iam_instance_profile.instance_profile.*.arn, [""]), 0)
+  description = "This is the arn of instance profile if enable_iam_setup variable is set to true"
 }
 
 output "iam_instance_profile_id" {
-  value = aws_iam_instance_profile.instance_profile.id
+  value = element(concat(aws_iam_instance_profile.instance_profile.*.id, [""]), 0)
+  description = "This is the id of instance profile if enable_iam_setup variable is set to true"
 }
 
 output "iam_instance_profile_name" {
-  value = aws_iam_instance_profile.instance_profile.name
+  value = element(concat(aws_iam_instance_profile.instance_profile.*.name, [""]), 0)
+  description = "This is the name of instance profile if enable_iam_setup variable is set to true"
 }
 
 output "iam_role_arn" {
-  value = aws_iam_role.instance_role.arn
+  value       = element(concat(aws_iam_role.instance_role.*.arn, [""]), 0)
+  description = "This is the arn of instance role if enable_iam_setup variable is set to true"
 }
 
 output "iam_role_id" {
-  value = aws_iam_role.instance_role.id
+  value       = element(concat(aws_iam_role.instance_role.*.id, [""]), 0)
+  description = "This is the id of instance role if enable_iam_setup variable is set to true"
 }
 
 output "security_group_id" {

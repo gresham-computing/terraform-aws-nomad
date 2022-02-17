@@ -75,7 +75,10 @@ resource "aws_launch_configuration" "launch_configuration" {
   instance_type = var.instance_type
   user_data     = var.user_data
 
-  iam_instance_profile = aws_iam_instance_profile.instance_profile.name
+  iam_instance_profile = var.enable_iam_setup ? element(
+    concat(aws_iam_instance_profile.instance_profile.*.name, [""]),
+    0,
+  ) : var.iam_instance_profile_name
   key_name             = var.ssh_key_name
 
   security_groups = concat(
@@ -178,9 +181,11 @@ module "security_group_rules" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_iam_instance_profile" "instance_profile" {
+  count = var.enable_iam_setup ? 1 : 0
+
   name_prefix = var.cluster_name
   path        = var.instance_profile_path
-  role        = aws_iam_role.instance_role.name
+  role        = element(concat(aws_iam_role.instance_role.*.name, [""]), 0)
 
   # aws_launch_configuration.launch_configuration in this module sets create_before_destroy to true, which means
   # everything it depends on, including this resource, must set it as well, or you'll get cyclic dependency errors
@@ -191,6 +196,8 @@ resource "aws_iam_instance_profile" "instance_profile" {
 }
 
 resource "aws_iam_role" "instance_role" {
+  count = var.enable_iam_setup ? 1 : 0
+
   name_prefix        = var.cluster_name
   assume_role_policy = data.aws_iam_policy_document.instance_role.json
 

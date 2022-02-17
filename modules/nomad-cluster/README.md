@@ -170,6 +170,8 @@ Instances in its ASG and form a cluster with them.
 
 The IAM Role ARN is exported as an output variable if you need to add additional permissions.
 
+You can disable the creation of the IAM role and policies if needed by setting enable_iam_setup variable to false. This allows you to create the role seperately from this module and supply the external role arn via the iam_instance_profile_name variable.
+
 ## How do you roll out updates?
 
 If you want to deploy a new version of Nomad across the cluster, the best way to do that is to:
